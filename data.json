@@ -1,0 +1,29 @@
+{
+  "columns": [
+    {
+      "id": "col-1",
+      "title": "Backlog"
+    },
+    {
+      "id": "col-2",
+      "title": "In Progress"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t-1",
+      "columnId": "col-1",
+      "content": "Спроектировать схему данных"
+    },
+    {
+      "id": "t-2",
+      "columnId": "col-1",
+      "content": "Настроить IndexedDB хранилище"
+    },
+    {
+      "id": "t-3",
+      "columnId": "col-2",
+      "content": "Сделать Drag and Drop интерфейс"
+    }
+  ]
+}
