@@ -7,6 +7,10 @@
     {
       "id": "col-2",
       "title": "In Progress"
+    },
+    {
+      "id": "col-1787593563208",
+      "title": "Новая колонка"
     }
   ],
   "tasks": [
@@ -30,6 +34,18 @@
       "columnId": "col-1",
       "content": "Посадить цветы",
       "description": "на могилке"
+    },
+    {
+      "id": "task-1787593586920",
+      "columnId": "col-1787593563208",
+      "content": "Список покупок",
+      "description": "Кешью\nИндейка"
+    },
+    {
+      "id": "task-1787593623429",
+      "columnId": "col-1787593563208",
+      "content": "Новая задача",
+      "description": ""
     }
   ]
 }
