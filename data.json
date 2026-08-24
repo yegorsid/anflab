@@ -7,10 +7,6 @@
     {
       "id": "col-2",
       "title": "In Progress"
-    },
-    {
-      "id": "col-1787564574752",
-      "title": "жопа"
     }
   ],
   "tasks": [
@@ -28,6 +24,12 @@
       "id": "t-3",
       "columnId": "col-2",
       "content": "Сделать Drag and Drop интерфейс"
+    },
+    {
+      "id": "task-1787570028214",
+      "columnId": "col-1",
+      "content": "Посадить цветы",
+      "description": "на могилке"
     }
   ]
 }
