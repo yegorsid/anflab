@@ -38,7 +38,7 @@ export function ColumnContainer({
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
   };
 
   if (isDragging) {
@@ -46,7 +46,7 @@ export function ColumnContainer({
       <div
         ref={setNodeRef}
         style={style}
-        className="w-[300px] h-[500px] bg-background/50 border-2 border-primary rounded-xl shrink-0 opacity-40"
+        className="w-[300px] h-[500px] max-h-[calc(100vh-120px)] bg-background/50 border-2 border-dashed border-primary rounded-xl shrink-0 opacity-40"
       />
     );
   }
@@ -66,11 +66,11 @@ export function ColumnContainer({
           type="text"
           value={column.title}
           onChange={(e) => onUpdateColumnTitle(column.id, e.target.value)}
-          className="bg-transparent text-sm font-semibold outline-none focus:border-b border-primary px-1"
+          className="bg-transparent text-sm font-semibold outline-none focus:border-b border-primary px-1 w-full mr-2"
         />
         <button
           onClick={() => onDeleteColumn(column.id)}
-          className="text-muted-foreground hover:text-destructive p-1 rounded transition-colors"
+          className="text-muted-foreground hover:text-destructive p-1 rounded transition-colors shrink-0"
         >
           <Trash2 className="w-4 h-4" />
         </button>

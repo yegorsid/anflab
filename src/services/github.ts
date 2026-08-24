@@ -15,7 +15,6 @@ interface FetchResult {
   sha: string;
 }
 
-// Корректное декодирование UTF-8 из Base64
 function base64ToUtf8(str: string): string {
   const cleanStr = str.replace(/\n/g, "");
   return decodeURIComponent(
@@ -26,7 +25,6 @@ function base64ToUtf8(str: string): string {
   );
 }
 
-// Корректное кодирование UTF-8 в Base64
 function utf8ToBase64(str: string): string {
   return btoa(
     encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
@@ -35,7 +33,6 @@ function utf8ToBase64(str: string): string {
   );
 }
 
-// Загрузка data.json из GitHub
 export async function fetchBoardFromGithub(): Promise<FetchResult | null> {
   if (!TOKEN || !OWNER || !REPO) {
     console.warn("Переменные VITE_GITHUB_* не заданы в .env");
@@ -70,7 +67,6 @@ export async function fetchBoardFromGithub(): Promise<FetchResult | null> {
   }
 }
 
-// Сохранение data.json в GitHub (требует актуальный SHA файла)
 export async function saveBoardToGithub(
   data: BoardData,
   sha?: string
@@ -110,5 +106,5 @@ export async function saveBoardToGithub(
   }
 
   const resJson = await res.json();
-  return resJson.content.sha; // Возвращаем новый SHA коммита
+  return resJson.content.sha;
 }
