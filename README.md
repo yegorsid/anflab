@@ -1,75 +1,33 @@
-# React + TypeScript + Vite
+# AnfLab — Personal Kanban Board
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Интерактивная Канбан-доска на **React + TypeScript + Vite**. Работает как SPA без собственного бэкенда — состояние доски сохраняется напрямую в файл `data.json` внутри твоего GitHub-репозитория через GitHub REST API.
 
-Currently, two official plugins are available:
+🚀 **Live App:** [https://yegorsid.github.io/anflab/](https://yegorsid.github.io/anflab/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Особенности
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Drag-and-Drop:** Плавное перетаскивание колонок и задач на базе `@dnd-kit`.
+* **Serverless Persistence (GitHub-as-a-Backend):** Чтение и запись состояния доски напрямую в `data.json` через GitHub Contents API.
+* **Экран авторизации:** Доступ к интерфейсу закрыт простым экраном ввода пароля.
+* **Локальное кэширование:** Автоматическое сохранение текущего состояния в `localStorage` для защиты от потери данных.
+* **Автоматический CI/CD:** Автосборка и деплой на GitHub Pages при каждом push в ветку `main`.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 Стек технологий
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **Frontend:** React, TypeScript, Vite
+* **UI & DnD:** `@dnd-kit/core`, `@dnd-kit/sortable`, Lucide React, Tailwind CSS
+* **API:** GitHub REST API (Contents API)
+* **Hosting & CI/CD:** GitHub Pages + GitHub Actions
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Локальный запуск
 
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+1. **Клонируй репозиторий:**
+   ```bash
+   git clone [https://github.com/yegorsid/anflab.git](https://github.com/yegorsid/anflab.git)
+   cd anflab
