@@ -1,169 +1,137 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DndContext,
-  type DragEndEvent,
-  type DragOverEvent,
   DragOverlay,
-  type DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
+  type DragOverEvent,
 } from "@dnd-kit/core";
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import { CloudUpload, Loader2, LogOut, Plus } from "lucide-react";
+import { Plus, Save, Loader2, RefreshCw } from "lucide-react";
+
 import type { Column, Task } from "@/types";
 import { ColumnContainer } from "@/components/ColumnContainer";
 import { TaskCard } from "@/components/TaskCard";
-import { LoginScreen } from "@/components/LoginScreen";
-import { fetchFromGitHub, saveToGitHub, type GitHubConfig } from "@/services/github";
+import { TaskModal } from "@/components/TaskModal";
+import { fetchBoardFromGithub, saveBoardToGithub } from "@/services/github";
 
-const STORAGE_KEYS = {
-  COLUMNS: "anflab_columns",
-  TASKS: "anflab_tasks",
-  LAST_SAVED_STATE: "anflab_last_saved",
-  IS_AUTH: "anflab_is_authenticated",
-};
+const defaultColumns: Column[] = [
+  { id: "todo", title: "Надо сделать" },
+  { id: "in-progress", title: "В работе" },
+  { id: "done", title: "Готово" },
+];
 
-// Конфиг автоматически берется из .env файлов
-const gitHubConfig: GitHubConfig = {
-  owner: import.meta.env.VITE_GITHUB_OWNER || "",
-  repo: import.meta.env.VITE_GITHUB_REPO || "",
-  token: import.meta.env.VITE_GITHUB_TOKEN || "",
-  filePath: "data.json",
-};
+const defaultTasks: Task[] = [
+  {
+    id: "1",
+    columnId: "todo",
+    content: "Изучить React + TypeScript",
+    description: "Посмотреть документацию и настроить Vite.",
+  },
+];
 
-const APP_PASSWORD = import.meta.env.VITE_APP_PASSWORD || "";
-
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem(STORAGE_KEYS.IS_AUTH) === "true";
-  });
-
+export function App() {
   const [columns, setColumns] = useState<Column[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.COLUMNS);
-    return saved ? JSON.parse(saved) : [];
+    const saved = localStorage.getItem("anflab_columns");
+    return saved ? JSON.parse(saved) : defaultColumns;
   });
 
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.TASKS);
-    return saved ? JSON.parse(saved) : [];
+    const saved = localStorage.getItem("anflab_tasks");
+    return saved ? JSON.parse(saved) : defaultTasks;
   });
 
-  const [fileSha, setFileSha] = useState<string>("");
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  // Храним SHA последнего файла на GitHub для выполнения PUT запросов
+  const [fileSha, setFileSha] = useState<string | undefined>(undefined);
+
+  // Слепок сохраненного состояния (для проверки изменений)
+  const [lastSavedState, setLastSavedState] = useState<string>(() =>
+    JSON.stringify({ columns, tasks })
+  );
+
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [lastSavedState, setLastSavedState] = useState<string>(
-    () => localStorage.getItem(STORAGE_KEYS.LAST_SAVED_STATE) || ""
-  );
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
-  );
+  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const currentStateStr = JSON.stringify({ columns, tasks });
-  const hasUnsavedChanges = currentStateStr !== lastSavedState;
+  // Проверка наличия несохраненных изменений
+  const currentStateJson = JSON.stringify({ columns, tasks });
+  const hasUnsavedChanges = currentStateJson !== lastSavedState;
 
-  // При авторизации — автозагрузка данных из GitHub
+  // --- Загрузка данных с GitHub при первом монтировании ---
   useEffect(() => {
-    if (isAuthenticated) {
-      loadInitialData();
-    }
-  }, [isAuthenticated]);
-
-  // Кэширование в localStorage
-  useEffect(() => {
-    if (columns.length > 0 || tasks.length > 0) {
-      localStorage.setItem(STORAGE_KEYS.COLUMNS, JSON.stringify(columns));
-      localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
-    }
-  }, [columns, tasks]);
-
-  const loadInitialData = async () => {
-    try {
+    async function loadInitialData() {
       setIsLoading(true);
-      const result = await fetchFromGitHub<{ columns: Column[]; tasks: Task[] }>(gitHubConfig);
+      const result = await fetchBoardFromGithub();
+
       if (result) {
         setColumns(result.data.columns || []);
         setTasks(result.data.tasks || []);
         setFileSha(result.sha);
 
-        const remoteStr = JSON.stringify(result.data);
-        setLastSavedState(remoteStr);
-        localStorage.setItem(STORAGE_KEYS.LAST_SAVED_STATE, remoteStr);
+        const loadedJson = JSON.stringify(result.data);
+        setLastSavedState(loadedJson);
+
+        localStorage.setItem("anflab_columns", JSON.stringify(result.data.columns));
+        localStorage.setItem("anflab_tasks", JSON.stringify(result.data.tasks));
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
       setIsLoading(false);
     }
-  };
 
-  const handleLogin = (pass: string): boolean => {
-    if (pass === APP_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem(STORAGE_KEYS.IS_AUTH, "true");
-      return true;
-    }
-    return false;
-  };
+    loadInitialData();
+  }, []);
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem(STORAGE_KEYS.IS_AUTH);
-  };
+  // Кэш в localStorage
+  useEffect(() => {
+    localStorage.setItem("anflab_columns", JSON.stringify(columns));
+  }, [columns]);
 
-  const handleSaveToGitHub = async () => {
+  useEffect(() => {
+    localStorage.setItem("anflab_tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
+  // --- Функция сохранения в GitHub ---
+  const handleSaveData = async () => {
+    setIsSaving(true);
     try {
-      setIsSaving(true);
       const dataToSave = { columns, tasks };
+      const newSha = await saveBoardToGithub(dataToSave, fileSha);
 
-      let currentSha = fileSha;
-      if (!currentSha) {
-        const existing = await fetchFromGitHub(gitHubConfig);
-        if (existing) currentSha = existing.sha;
-      }
-
-      const newSha = await saveToGitHub(gitHubConfig, dataToSave, currentSha);
+      // Обновляем SHA и состояние сохраненных данных
       setFileSha(newSha);
+      setLastSavedState(currentStateJson);
 
-      const savedStr = JSON.stringify(dataToSave);
-      setLastSavedState(savedStr);
-      localStorage.setItem(STORAGE_KEYS.LAST_SAVED_STATE, savedStr);
-    } catch (err) {
-      console.error(err);
-      alert("Ошибка сохранения в GitHub");
+      localStorage.setItem("anflab_columns", JSON.stringify(columns));
+      localStorage.setItem("anflab_tasks", JSON.stringify(tasks));
+    } catch (error) {
+      console.error("Не удалось сохранить данные:", error);
+      alert("Ошибка при сохранении в GitHub! Проверьте консоль или секреты.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Handlers колонок и задач
-  const handleAddColumn = () => {
-    const newCol: Column = {
+  // --- Работа с колонками ---
+  const handleCreateColumn = () => {
+    const newColumn: Column = {
       id: `col-${Date.now()}`,
-      title: `Новая колонка ${columns.length + 1}`,
+      title: "Новая колонка",
     };
-    setColumns((prev) => [...prev, newCol]);
-  };
-
-  const handleDeleteColumn = (id: string) => {
-    setColumns((prev) => prev.filter((col) => col.id !== id));
-    setTasks((prev) => prev.filter((task) => task.columnId !== id));
-  };
-
-  const handleAddTask = (columnId: string) => {
-    const newTask: Task = {
-      id: `t-${Date.now()}`,
-      columnId,
-      content: `Новая задача ${tasks.length + 1}`,
-    };
-    setTasks((prev) => [...prev, newTask]);
-  };
-
-  const handleDeleteTask = (id: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    setColumns((prev) => [...prev, newColumn]);
   };
 
   const handleUpdateColumnTitle = (id: string, title: string) => {
@@ -172,16 +140,43 @@ export default function App() {
     );
   };
 
-  const handleUpdateTask = (id: string, content: string) => {
+  const handleDeleteColumn = (id: string) => {
+    setColumns((prev) => prev.filter((col) => col.id !== id));
+    setTasks((prev) => prev.filter((task) => task.columnId !== id));
+  };
+
+  // --- Работа с задачами ---
+  const handleAddTask = (columnId: string) => {
+    const newTask: Task = {
+      id: `task-${Date.now()}`,
+      columnId,
+      content: "Новая задача",
+      description: "",
+    };
+    setTasks((prev) => [...prev, newTask]);
+    setEditingTask(newTask);
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleSaveTaskDetails = (updatedTask: Task) => {
     setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, content } : task))
+      prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
     );
   };
 
-  // DnD Handlers
+  // --- Drag-and-Drop ---
   const handleDragStart = (event: DragStartEvent) => {
+    if (event.active.data.current?.type === "Column") {
+      setActiveColumn(event.active.data.current.column);
+      return;
+    }
+
     if (event.active.data.current?.type === "Task") {
       setActiveTask(event.active.data.current.task);
+      return;
     }
   };
 
@@ -191,100 +186,92 @@ export default function App() {
 
     const activeId = active.id;
     const overId = over.id;
+
     if (activeId === overId) return;
 
-    const isActiveATask = active.data.current?.type === "Task";
-    const isOverATask = over.data.current?.type === "Task";
-    if (!isActiveATask) return;
+    const isActiveTask = active.data.current?.type === "Task";
+    const isOverTask = over.data.current?.type === "Task";
 
-    if (isActiveATask && isOverATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const overIndex = tasks.findIndex((t) => t.id === overId);
+    if (!isActiveTask) return;
 
-        if (tasks[activeIndex].columnId !== tasks[overIndex].columnId) {
-          tasks[activeIndex].columnId = tasks[overIndex].columnId;
-          return arrayMove(tasks, activeIndex, overIndex - 1);
+    if (isActiveTask && isOverTask) {
+      setTasks((prev) => {
+        const activeIndex = prev.findIndex((t) => t.id === activeId);
+        const overIndex = prev.findIndex((t) => t.id === overId);
+
+        if (prev[activeIndex].columnId !== prev[overIndex].columnId) {
+          prev[activeIndex].columnId = prev[overIndex].columnId;
+          return arrayMove(prev, activeIndex, overIndex - 1);
         }
-        return arrayMove(tasks, activeIndex, overIndex);
+
+        return arrayMove(prev, activeIndex, overIndex);
       });
     }
 
-    const isOverAColumn = over.data.current?.type === "Column";
-    if (isActiveATask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        tasks[activeIndex].columnId = overId as string;
-        return arrayMove(tasks, activeIndex, activeIndex);
+    const isOverColumn = over.data.current?.type === "Column";
+
+    if (isActiveTask && isOverColumn) {
+      setTasks((prev) => {
+        const activeIndex = prev.findIndex((t) => t.id === activeId);
+        prev[activeIndex].columnId = overId as string;
+        return arrayMove(prev, activeIndex, activeIndex);
       });
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveColumn(null);
     setActiveTask(null);
+
     const { active, over } = event;
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
+
     if (activeId === overId) return;
 
-    const isActiveAColumn = active.data.current?.type === "Column";
-    if (isActiveAColumn) {
-      setColumns((columns) => {
-        const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
-        const overColumnIndex = columns.findIndex((col) => col.id === overId);
-        return arrayMove(columns, activeColumnIndex, overColumnIndex);
+    const isActiveColumn = active.data.current?.type === "Column";
+    if (isActiveColumn) {
+      setColumns((prev) => {
+        const activeIndex = prev.findIndex((col) => col.id === activeId);
+        const overIndex = prev.findIndex((col) => col.id === overId);
+        return arrayMove(prev, activeIndex, overIndex);
       });
     }
   };
 
-  // Если не залогинены — показываем экран ввода пароля
-  if (!isAuthenticated) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
-
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <header className="border-b px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans antialiased">
+      {/* Шапка */}
+      <header className="border-b px-6 py-4 flex items-center justify-between bg-card min-h-[65px]">
         <div className="flex items-center gap-3">
-          <div className="w-6 h-6 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
-            A
-          </div>
-          <h1 className="font-semibold text-lg">AnfLab</h1>
+          <h1 className="text-xl font-bold tracking-tight">AnfLab Kanban</h1>
           {isLoading && (
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground ml-2">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Синхронизация...
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground animate-pulse">
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Загрузка с GitHub...
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-3">
-          {hasUnsavedChanges && (
-            <button
-              onClick={handleSaveToGitHub}
-              disabled={isSaving}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm transition-all"
-            >
-              {isSaving ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <CloudUpload className="w-3.5 h-3.5" />
-              )}
-              {isSaving ? "Сохранение..." : "Save to GitHub"}
-            </button>
-          )}
-
+        {/* Кнопка сохранения в GitHub видна ТОЛЬКО при изменениях */}
+        {hasUnsavedChanges && !isLoading && (
           <button
-            onClick={handleLogout}
-            className="p-2 rounded-lg border hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-            title="Выйти"
+            onClick={handleSaveData}
+            disabled={isSaving}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary/90 transition-all shadow-sm disabled:opacity-50 animate-in fade-in duration-200"
           >
-            <LogOut className="w-4 h-4" />
+            {isSaving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {isSaving ? "Сохранение в GitHub..." : "Сохранить изменения"}
           </button>
-        </div>
+        )}
       </header>
 
+      {/* Доска */}
       <main className="flex-1 p-6 overflow-x-auto">
         <DndContext
           sensors={sensors}
@@ -301,35 +288,53 @@ export default function App() {
                   tasks={tasks.filter((task) => task.columnId === col.id)}
                   onAddTask={handleAddTask}
                   onUpdateColumnTitle={handleUpdateColumnTitle}
-                  onUpdateTask={handleUpdateTask}
                   onDeleteColumn={handleDeleteColumn}
-                  onDeleteTask={handleDeleteTask}
+                  onOpenTaskModal={(task) => setEditingTask(task)}
                 />
               ))}
             </SortableContext>
 
+            {/* Кнопка добавления колонки */}
             <button
-              onClick={handleAddColumn}
-              className="w-[300px] h-[56px] shrink-0 border-2 border-dashed rounded-xl flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground hover:border-solid transition-all"
+              onClick={handleCreateColumn}
+              className="w-[300px] h-[56px] border border-dashed border-border hover:border-primary/50 rounded-xl flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-card/50 transition-all shrink-0"
             >
               <Plus className="w-4 h-4" /> Добавить колонку
             </button>
           </div>
 
+          {/* Drag Overlay */}
           {createPortal(
             <DragOverlay>
-              {activeTask && (
-                <TaskCard
-                  task={activeTask}
-                  onUpdate={handleUpdateTask}
-                  onDelete={handleDeleteTask}
+              {activeColumn && (
+                <ColumnContainer
+                  column={activeColumn}
+                  tasks={tasks.filter(
+                    (task) => task.columnId === activeColumn.id
+                  )}
+                  onAddTask={handleAddTask}
+                  onUpdateColumnTitle={handleUpdateColumnTitle}
+                  onDeleteColumn={handleDeleteColumn}
                 />
               )}
+              {activeTask && <TaskCard task={activeTask} />}
             </DragOverlay>,
             document.body
           )}
         </DndContext>
       </main>
+
+      {/* Модалка задачи */}
+      {editingTask && (
+        <TaskModal
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={handleSaveTaskDetails}
+          onDelete={handleDeleteTask}
+        />
+      )}
     </div>
   );
 }
+
+export default App;

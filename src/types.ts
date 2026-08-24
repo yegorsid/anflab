@@ -7,4 +7,5 @@ export interface Task {
   id: string;
   columnId: string;
   content: string;
+  description?: string;
 }
