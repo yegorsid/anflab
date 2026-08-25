@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   DndContext,
   DragOverlay,
   PointerSensor,
   useSensor,
   useSensors,
+  pointerWithin,
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
@@ -54,8 +55,9 @@ export function App() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const currentStateJson = JSON.stringify({ columns, tasks });
-  const hasUnsavedChanges = currentStateJson !== lastSavedState;
+  const hasUnsavedChanges = useMemo(() => {
+    return JSON.stringify({ columns, tasks }) !== lastSavedState;
+  }, [columns, tasks, lastSavedState]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -121,6 +123,7 @@ export function App() {
   const handleSaveData = async () => {
     setIsSaving(true);
     try {
+      const currentStateJson = JSON.stringify({ columns, tasks });
       const dataToSave = { columns, tasks };
       const newSha = await saveBoardToGithub(dataToSave, fileSha);
 
@@ -173,8 +176,10 @@ export function App() {
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
+
     const activeId = active.id;
     const overId = over.id;
+
     if (activeId === overId) return;
 
     const isActiveTask = active.data.current?.type === "Task";
@@ -182,25 +187,41 @@ export function App() {
 
     if (!isActiveTask) return;
 
-    if (isActiveTask && isOverTask) {
+    if (isOverTask) {
       setTasks((prev) => {
         const activeIndex = prev.findIndex((t) => t.id === activeId);
         const overIndex = prev.findIndex((t) => t.id === overId);
 
+        if (activeIndex === -1 || overIndex === -1) return prev;
+
         if (prev[activeIndex].columnId !== prev[overIndex].columnId) {
-          prev[activeIndex].columnId = prev[overIndex].columnId;
-          return arrayMove(prev, activeIndex, overIndex - 1);
+          const updated = [...prev];
+          updated[activeIndex] = {
+            ...updated[activeIndex],
+            columnId: prev[overIndex].columnId,
+          };
+          return arrayMove(updated, activeIndex, overIndex);
         }
-        return arrayMove(prev, activeIndex, overIndex);
+
+        return prev;
       });
     }
 
     const isOverColumn = over.data.current?.type === "Column";
-    if (isActiveTask && isOverColumn) {
+    if (isOverColumn) {
       setTasks((prev) => {
         const activeIndex = prev.findIndex((t) => t.id === activeId);
-        prev[activeIndex].columnId = overId as string;
-        return arrayMove(prev, activeIndex, activeIndex);
+        if (activeIndex === -1) return prev;
+
+        if (prev[activeIndex].columnId === overId) return prev;
+
+        const updated = [...prev];
+        updated[activeIndex] = {
+          ...updated[activeIndex],
+          columnId: overId as string,
+        };
+
+        return arrayMove(updated, activeIndex, activeIndex);
       });
     }
   };
@@ -214,6 +235,7 @@ export function App() {
 
     const activeId = active.id;
     const overId = over.id;
+
     if (activeId === overId) return;
 
     const isActiveColumn = active.data.current?.type === "Column";
@@ -221,7 +243,25 @@ export function App() {
       setColumns((prev) => {
         const activeIndex = prev.findIndex((col) => col.id === activeId);
         const overIndex = prev.findIndex((col) => col.id === overId);
+        if (activeIndex === -1 || overIndex === -1) return prev;
         return arrayMove(prev, activeIndex, overIndex);
+      });
+      return;
+    }
+
+    const isActiveTask = active.data.current?.type === "Task";
+    if (isActiveTask) {
+      setTasks((prev) => {
+        const activeIndex = prev.findIndex((t) => t.id === activeId);
+        const overIndex = prev.findIndex((t) => t.id === overId);
+
+        if (activeIndex === -1 || overIndex === -1) return prev;
+
+        if (prev[activeIndex].columnId === prev[overIndex].columnId) {
+          return arrayMove(prev, activeIndex, overIndex);
+        }
+
+        return prev;
       });
     }
   };
@@ -241,7 +281,6 @@ export function App() {
             </span>
           )}
         </div>
-
         <div className="flex items-center gap-4">
           {hasUnsavedChanges && !isLoading && (
             <button
@@ -257,8 +296,6 @@ export function App() {
               {isSaving ? "Сохранение..." : "Сохранить изменения"}
             </button>
           )}
-
-          {/* Добавил кнопку выхода для удобства */}
           <button
             onClick={handleLogout}
             className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-lg hover:bg-destructive/10"
@@ -272,6 +309,7 @@ export function App() {
       <main className="flex-1 p-6 overflow-x-auto">
         <DndContext
           sensors={sensors}
+          collisionDetection={pointerWithin}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
@@ -298,7 +336,6 @@ export function App() {
               <Plus className="w-4 h-4" /> Добавить колонку
             </button>
           </div>
-
           {createPortal(
             <DragOverlay>
               {activeColumn && (
@@ -316,7 +353,6 @@ export function App() {
           )}
         </DndContext>
       </main>
-
       {editingTask && (
         <TaskModal
           task={editingTask}
