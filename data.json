@@ -6,11 +6,11 @@
     },
     {
       "id": "col-2",
-      "title": "In Progress"
+      "title": "Попробовать"
     },
     {
       "id": "col-1787593563208",
-      "title": "Новая колонка"
+      "title": "Мясное"
     },
     {
       "id": "col-1787659027825",
@@ -19,26 +19,58 @@
   ],
   "tasks": [
     {
-      "id": "t-1",
-      "columnId": "col-1",
-      "content": "Спроектировать схему данных"
-    },
-    {
-      "id": "t-3",
-      "columnId": "col-2",
-      "content": "Сделать Drag and Drop интерфейс"
-    },
-    {
       "id": "task-1787593586920",
-      "columnId": "col-1787593563208",
+      "columnId": "col-1",
       "content": "Список покупок",
       "description": "Кешью\nИндейка на суп\nИндейка для жарки\nМюсли"
     },
     {
       "id": "task-1787593623429",
       "columnId": "col-1787593563208",
-      "content": "Новая задача",
+      "content": "Рубленые котлеты",
       "description": ""
+    },
+    {
+      "id": "task-1787674375960",
+      "columnId": "col-1787593563208",
+      "content": "Котлеты из фарша с морковкой и луком",
+      "description": ""
+    },
+    {
+      "id": "task-1787674391829",
+      "columnId": "col-1787593563208",
+      "content": "Куриная печень с луком",
+      "description": ""
+    },
+    {
+      "id": "task-1787674402403",
+      "columnId": "col-1787593563208",
+      "content": "Филе в панировке",
+      "description": ""
+    },
+    {
+      "id": "task-1787674413558",
+      "columnId": "col-1787593563208",
+      "content": "Филе в листах",
+      "description": ""
+    },
+    {
+      "id": "task-1787674419567",
+      "columnId": "col-1787593563208",
+      "content": "Лазанья",
+      "description": ""
+    },
+    {
+      "id": "task-1787674439500",
+      "columnId": "col-2",
+      "content": "Рыбный риет",
+      "description": ""
+    },
+    {
+      "id": "task-1787674448773",
+      "columnId": "col-1787593563208",
+      "content": "Хек со сметаной, луком, сыром и майонезом в духовке",
+      "description": "190 градусов\n30 минут"
     }
   ]
 }
