@@ -21,12 +21,12 @@
       "title": "Перекусы"
     },
     {
-      "id": "col-1787674687577",
-      "title": "Завтраки"
-    },
-    {
       "id": "col-2",
       "title": "Попробовать"
+    },
+    {
+      "id": "col-1787674982098",
+      "title": "Особый случай"
     }
   ],
   "tasks": [
@@ -147,7 +147,7 @@
     {
       "id": "task-1787674568659",
       "columnId": "col-1787674514995",
-      "content": "Новая задача",
+      "content": "Нарезка морковь/перец",
       "description": ""
     },
     {
@@ -163,33 +163,51 @@
       "description": ""
     },
     {
+      "id": "task-1787674702005",
+      "columnId": "col-1787674579998",
+      "content": "Вареники с вишней",
+      "description": ""
+    },
+    {
+      "id": "task-1787674708755",
+      "columnId": "col-1787674579998",
+      "content": "Творожная запеканка",
+      "description": ""
+    },
+    {
       "id": "task-1787674617715",
       "columnId": "col-1787674579998",
       "content": "Бутер с индейкой",
       "description": ""
     },
     {
-      "id": "task-1787674679057",
-      "columnId": "col-1787674579998",
-      "content": "Новая задача",
-      "description": ""
-    },
-    {
       "id": "task-1787674696066",
-      "columnId": "col-1787674687577",
+      "columnId": "col-1787674579998",
       "content": "Сырники",
       "description": ""
     },
     {
-      "id": "task-1787674702005",
-      "columnId": "col-1787674687577",
-      "content": "Вареники с вишней",
+      "id": "task-1787674679057",
+      "columnId": "col-1787674579998",
+      "content": "Протеиновые вафли",
       "description": ""
     },
     {
-      "id": "task-1787674708755",
-      "columnId": "col-1787674687577",
-      "content": "Творожная запеканка",
+      "id": "task-1787674988057",
+      "columnId": "col-1787674982098",
+      "content": "Торт шоколадный с вишней",
+      "description": ""
+    },
+    {
+      "id": "task-1787674999772",
+      "columnId": "col-1787674982098",
+      "content": "Вишневый пирог",
+      "description": ""
+    },
+    {
+      "id": "task-1787675006854",
+      "columnId": "col-1787674982098",
+      "content": "Банановый кекс",
       "description": ""
     }
   ]
