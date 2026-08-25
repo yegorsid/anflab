@@ -209,6 +209,18 @@
       "columnId": "col-1787674982098",
       "content": "Банановый кекс",
       "description": ""
+    },
+    {
+      "id": "task-1787675050399",
+      "columnId": "col-1787674982098",
+      "content": "Шоколадный пудинг",
+      "description": ""
+    },
+    {
+      "id": "task-1787675063109",
+      "columnId": "col-1787674514995",
+      "content": "Квашеная капуста",
+      "description": ""
     }
   ]
 }
