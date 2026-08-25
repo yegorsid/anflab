@@ -5,16 +5,28 @@
       "title": "Backlog"
     },
     {
-      "id": "col-2",
-      "title": "Попробовать"
-    },
-    {
       "id": "col-1787593563208",
       "title": "Мясное"
     },
     {
       "id": "col-1787659027825",
-      "title": "Новая колонка"
+      "title": "Гарниры"
+    },
+    {
+      "id": "col-1787674514995",
+      "title": "Овощная добивка"
+    },
+    {
+      "id": "col-1787674579998",
+      "title": "Перекусы"
+    },
+    {
+      "id": "col-1787674687577",
+      "title": "Завтраки"
+    },
+    {
+      "id": "col-2",
+      "title": "Попробовать"
     }
   ],
   "tasks": [
@@ -22,7 +34,7 @@
       "id": "task-1787593586920",
       "columnId": "col-1",
       "content": "Список покупок",
-      "description": "Кешью\nИндейка на суп\nИндейка для жарки\nМюсли"
+      "description": "Сыр\nИндейка на суп\nИндейка для жарки\nМюсли\nКешью\nТворог"
     },
     {
       "id": "task-1787593623429",
@@ -71,6 +83,114 @@
       "columnId": "col-1787593563208",
       "content": "Хек со сметаной, луком, сыром и майонезом в духовке",
       "description": "190 градусов\n30 минут"
+    },
+    {
+      "id": "task-1787674485064",
+      "columnId": "col-1787659027825",
+      "content": "Греча",
+      "description": ""
+    },
+    {
+      "id": "task-1787674490731",
+      "columnId": "col-1787659027825",
+      "content": "Рис",
+      "description": ""
+    },
+    {
+      "id": "task-1787674495712",
+      "columnId": "col-1787659027825",
+      "content": "Пюре",
+      "description": ""
+    },
+    {
+      "id": "task-1787674500956",
+      "columnId": "col-1787659027825",
+      "content": "Булгур",
+      "description": ""
+    },
+    {
+      "id": "task-1787674506073",
+      "columnId": "col-1787659027825",
+      "content": "Батат",
+      "description": ""
+    },
+    {
+      "id": "task-1787674528444",
+      "columnId": "col-1787674514995",
+      "content": "Баклажаны",
+      "description": ""
+    },
+    {
+      "id": "task-1787674534585",
+      "columnId": "col-1787674514995",
+      "content": "Кабачки",
+      "description": ""
+    },
+    {
+      "id": "task-1787674542228",
+      "columnId": "col-1787674514995",
+      "content": "Тыква",
+      "description": ""
+    },
+    {
+      "id": "task-1787674548151",
+      "columnId": "col-1787674514995",
+      "content": "Брокколи",
+      "description": ""
+    },
+    {
+      "id": "task-1787674560602",
+      "columnId": "col-1787674514995",
+      "content": "Грибы",
+      "description": ""
+    },
+    {
+      "id": "task-1787674568659",
+      "columnId": "col-1787674514995",
+      "content": "Новая задача",
+      "description": ""
+    },
+    {
+      "id": "task-1787674588402",
+      "columnId": "col-1787674579998",
+      "content": "Бутер с малосольной рыбой",
+      "description": ""
+    },
+    {
+      "id": "task-1787674609415",
+      "columnId": "col-1787674579998",
+      "content": "Бутер с сыром",
+      "description": ""
+    },
+    {
+      "id": "task-1787674617715",
+      "columnId": "col-1787674579998",
+      "content": "Бутер с индейкой",
+      "description": ""
+    },
+    {
+      "id": "task-1787674679057",
+      "columnId": "col-1787674579998",
+      "content": "Новая задача",
+      "description": ""
+    },
+    {
+      "id": "task-1787674696066",
+      "columnId": "col-1787674687577",
+      "content": "Сырники",
+      "description": ""
+    },
+    {
+      "id": "task-1787674702005",
+      "columnId": "col-1787674687577",
+      "content": "Вареники с вишней",
+      "description": ""
+    },
+    {
+      "id": "task-1787674708755",
+      "columnId": "col-1787674687577",
+      "content": "Творожная запеканка",
+      "description": ""
     }
   ]
 }
