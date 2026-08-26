@@ -144,9 +144,11 @@ export function App() {
     const newColumn: Column = { id: `col-${Date.now()}`, title: "Новая колонка" };
     setColumns((prev) => [...prev, newColumn]);
   };
+  
   const handleUpdateColumnTitle = (id: string, title: string) => {
     setColumns((prev) => prev.map((col) => (col.id === id ? { ...col, title } : col)));
   };
+  
   const handleDeleteColumn = (id: string) => {
     setColumns((prev) => prev.filter((col) => col.id !== id));
     setTasks((prev) => prev.filter((task) => task.columnId !== id));
@@ -155,9 +157,10 @@ export function App() {
   const handleAddTask = (columnId: string) => {
     const newTask: Task = { id: `task-${Date.now()}`, columnId, content: "Новая задача", description: "" };
     setTasks((prev) => [...prev, newTask]);
-    setEditingTask(newTask);
   };
+  
   const handleDeleteTask = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
+  
   const handleSaveTaskDetails = (updatedTask: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
   };
@@ -325,6 +328,7 @@ export function App() {
                   onUpdateColumnTitle={handleUpdateColumnTitle}
                   onDeleteColumn={handleDeleteColumn}
                   onOpenTaskModal={(task) => setEditingTask(task)}
+                  onUpdateTask={handleSaveTaskDetails}
                 />
               ))}
             </SortableContext>

@@ -1,7 +1,7 @@
 import type { Column, Task } from "@/types";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, GripVertical } from "lucide-react";
 import { TaskCard } from "./TaskCard";
 
 interface Props {
@@ -11,16 +11,19 @@ interface Props {
   onUpdateColumnTitle: (id: string, title: string) => void;
   onDeleteColumn: (id: string) => void;
   onOpenTaskModal?: (task: Task) => void;
+  onUpdateTask?: (task: Task) => void;
 }
 
-export function ColumnContainer({
-                                  column,
-                                  tasks,
-                                  onAddTask,
-                                  onUpdateColumnTitle,
-                                  onDeleteColumn,
-                                  onOpenTaskModal,
-                                }: Props) {
+export function ColumnContainer(
+  {
+    column,
+    tasks,
+    onAddTask,
+    onUpdateColumnTitle,
+    onDeleteColumn,
+    onOpenTaskModal,
+    onUpdateTask,
+  }: Props) {
   const {
     setNodeRef,
     attributes,
@@ -60,17 +63,22 @@ export function ColumnContainer({
       <div
         {...attributes}
         {...listeners}
-        className="p-3.5 border-b font-semibold flex items-center justify-between cursor-grab"
+        className="p-3.5 border-b font-semibold flex items-center justify-between cursor-grab group"
       >
-        <input
-          type="text"
-          value={column.title}
-          onChange={(e) => onUpdateColumnTitle(column.id, e.target.value)}
-          className="bg-transparent text-sm font-semibold outline-none focus:border-b border-primary px-1 w-full mr-2"
-        />
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-2">
+          <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
+
+          <input
+            type="text"
+            value={column.title}
+            onChange={(e) => onUpdateColumnTitle(column.id, e.target.value)}
+            className="bg-transparent text-sm font-semibold outline-none focus:border-b border-primary px-1 w-full truncate"
+          />
+        </div>
         <button
           onClick={() => onDeleteColumn(column.id)}
-          className="text-muted-foreground hover:text-destructive p-1 rounded transition-colors shrink-0"
+          className="text-muted-foreground hover:text-destructive p-1 rounded transition-all opacity-0 group-hover:opacity-100 shrink-0"
+          title="Удалить колонку"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -83,6 +91,7 @@ export function ColumnContainer({
               key={task.id}
               task={task}
               onOpenModal={onOpenTaskModal}
+              onUpdateTask={onUpdateTask}
             />
           ))}
         </SortableContext>
