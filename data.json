@@ -227,6 +227,18 @@
       "columnId": "col-1787674579998",
       "content": "Оладушки из морковки с творогом",
       "description": ""
+    },
+    {
+      "id": "task-1787745180440",
+      "columnId": "col-1787659027825",
+      "content": "Макарошки",
+      "description": ""
+    },
+    {
+      "id": "task-1787745187920",
+      "columnId": "col-1787659027825",
+      "content": "Фунчоза?",
+      "description": ""
     }
   ]
 }
