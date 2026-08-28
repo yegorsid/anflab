@@ -251,6 +251,12 @@
       "columnId": "col-1787593563208",
       "content": "Новая задача",
       "description": ""
+    },
+    {
+      "id": "task-1787916182371",
+      "columnId": "col-1787674514995",
+      "content": "Лобио",
+      "description": ""
     }
   ]
 }
