@@ -2,7 +2,7 @@
   "columns": [
     {
       "id": "col-1",
-      "title": "Меню до 29.08 + вн"
+      "title": "Меню до 20.09"
     },
     {
       "id": "col-1787593563208",
@@ -34,7 +34,7 @@
       "id": "task-1787593586920",
       "columnId": "col-1",
       "content": "Список покупок",
-      "description": "Сыр\nИндейка на суп\nИндейка для жарки\nМюсли\nКешью\nТворог"
+      "description": "Сыр\nИндейка\nКапуста\nМолоко\nХлеб\nБолгарский перец\n\n"
     },
     {
       "id": "task-1787593623429",
@@ -62,7 +62,7 @@
     },
     {
       "id": "task-1787674413558",
-      "columnId": "col-1787593563208",
+      "columnId": "col-1",
       "content": "Филе в листах",
       "description": ""
     },
@@ -80,13 +80,19 @@
     },
     {
       "id": "task-1787674448773",
-      "columnId": "col-1787593563208",
+      "columnId": "col-1",
       "content": "Хек со сметаной, луком, сыром и майонезом в духовке",
       "description": "190 градусов\n30 минут"
     },
     {
+      "id": "task-1787674702005",
+      "columnId": "col-1",
+      "content": "Вареники с вишней",
+      "description": ""
+    },
+    {
       "id": "task-1787674485064",
-      "columnId": "col-1787659027825",
+      "columnId": "col-1",
       "content": "Греча",
       "description": ""
     },
@@ -112,12 +118,6 @@
       "id": "task-1787674506073",
       "columnId": "col-1787659027825",
       "content": "Батат",
-      "description": ""
-    },
-    {
-      "id": "task-1787674528444",
-      "columnId": "col-1787674514995",
-      "content": "Баклажаны",
       "description": ""
     },
     {
@@ -160,12 +160,6 @@
       "id": "task-1787674609415",
       "columnId": "col-1787674579998",
       "content": "Бутер с сыром",
-      "description": ""
-    },
-    {
-      "id": "task-1787674702005",
-      "columnId": "col-1787674579998",
-      "content": "Вареники с вишней",
       "description": ""
     },
     {
@@ -230,8 +224,14 @@
     },
     {
       "id": "task-1787745180440",
-      "columnId": "col-1787659027825",
+      "columnId": "col-1",
       "content": "Макарошки",
+      "description": ""
+    },
+    {
+      "id": "task-1787674528444",
+      "columnId": "col-1",
+      "content": "Баклажаны",
       "description": ""
     },
     {
@@ -256,6 +256,12 @@
       "id": "task-1787916182371",
       "columnId": "col-1787674514995",
       "content": "Лобио",
+      "description": ""
+    },
+    {
+      "id": "task-1789488877196",
+      "columnId": "col-1",
+      "content": "Тушеная капуста",
       "description": ""
     }
   ]
