@@ -253,15 +253,21 @@
       "description": ""
     },
     {
+      "id": "task-1789488877196",
+      "columnId": "col-1787674514995",
+      "content": "Тушеная капуста",
+      "description": ""
+    },
+    {
       "id": "task-1787916182371",
       "columnId": "col-1787674514995",
       "content": "Лобио",
       "description": ""
     },
     {
-      "id": "task-1789488877196",
-      "columnId": "col-1",
-      "content": "Тушеная капуста",
+      "id": "task-1790001782266",
+      "columnId": "col-1787674982098",
+      "content": "Брауни",
       "description": ""
     }
   ]
